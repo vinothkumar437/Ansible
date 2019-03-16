@@ -1,6 +1,4 @@
-- hosts: test
-  gather_facts: yes
-  tasks:
+
   - name: comment the line /etc/chrony.conf
     replace:
       path: /etc/chrony.conf
