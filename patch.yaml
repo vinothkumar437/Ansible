@@ -1,4 +1,4 @@
-- name: Update the kernel
+  - name: Update the kernel
     yum:
       name: "*"
       state: latest
@@ -23,3 +23,4 @@
       timeout: 60
   - name: check the ping pong
     ping:
+
