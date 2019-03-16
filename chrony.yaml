@@ -5,30 +5,19 @@
   vars:
     ntp_hostname: 192.168.1.121
   tasks:
-  #- name: comment the line /etc/chrony.conf
-  #  replace:
-  #    path: /etc/chrony.conf
-  #    regexp: '^server'
-  #    replace: '#server'
-  #    backup: yes
-  #- name: Add the NTP Server
-  #  blockinfile:
-  #    path: /etc/chrony.conf
-  #    marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
-  #    insertafter: "#server 3.centos.pool.ntp.org iburst"
-  #    content: |
-  #      server {{ ntp_hostname }} iburst
-  #- name: Restart service chronyd, in all cases
-  #  service:
-  #    name: chronyd
-  #    state: restarted
-  #- name: verify the chrony servers syncing or not
-  #  shell: chronyc sources
-  #  register: result
-  #- debug:
-  #    var: result.stdout_lines
-  - name: set timezone to Asia/Kolkata
-    shell: timedatectl set-timezone Asia/Kolkata
+  - name: comment the line /etc/chrony.conf
+    replace:
+      path: /etc/chrony.conf
+      regexp: '^server'
+      replace: '#server'
+      backup: yes
+  - name: Add the NTP Server
+    blockinfile:
+      path: /etc/chrony.conf
+      marker: "#<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+      insertafter: "#server 3.centos.pool.ntp.org iburst"
+      content: |
+        server {{ ntp_hostname }} iburst
   - name: Restart service chronyd, in all cases
     service:
       name: chronyd
