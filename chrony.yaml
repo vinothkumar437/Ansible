@@ -18,6 +18,11 @@
     service:
       name: chronyd
       state: restarted
+  - name: Verify the Chrony service is active
+    shell: systemctl status chronyd.service
+    register: result
+  - debug:
+      var: result.stdout_lines[0],result.stdout_lines[2]
   - name: verify the chrony servers syncing or not
     shell: chronyc sources
     register: result
