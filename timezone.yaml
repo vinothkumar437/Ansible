@@ -1,0 +1,29 @@
+- hosts: test
+  gather_facts: yes
+  tasks:
+  - name: set timezone to Asia/Kolkata
+    shell: timedatectl set-timezone Asia/Kolkata
+  - name: Restart service chronyd, in all cases
+    service:
+      name: chronyd
+      state: restarted
+  - name: Verify the Chrony service is active
+    shell: systemctl status chronyd.service
+    register: result
+  - debug:
+      var: result.stdout_lines[0],result.stdout_lines[2]
+  - name: verify the chrony servers syncing or not
+    shell: chronyc sources
+    register: result
+  - debug:
+      var: result.stdout_lines
+  - name: Verify the timezone
+    shell: timedatectl
+    register: result
+  - debug:
+      var: result.stdout_lines[3]
+  - name: verify the time
+    shell: date
+    register: result
+  - debug:
+      var: result.stdout_lines
