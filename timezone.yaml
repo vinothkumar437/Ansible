@@ -1,6 +1,4 @@
-- hosts: test
-  gather_facts: yes
-  tasks:
+
   - name: set timezone to Asia/Kolkata
     shell: timedatectl set-timezone Asia/Kolkata
   - name: Restart service chronyd, in all cases
