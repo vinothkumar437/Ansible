@@ -1,9 +1,5 @@
 - hosts: test
   gather_facts: yes
-  remote_user: ansible
-  sudo: yes
-  vars:
-    ntp_hostname: 192.168.1.121
   tasks:
   - name: comment the line /etc/chrony.conf
     replace:
