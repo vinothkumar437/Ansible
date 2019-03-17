@@ -1,0 +1,15 @@
+  - name: Disable and stop the {{ package_name }} service
+    service:
+      name: httpd
+      state: stopped
+      enabled: no
+  - name: Install the package {{ package_name }}
+    yum:
+      name: '{{ package_name }}'
+      state: absent
+  - name: Check the {{ package_name }} is removed
+    yum:
+      list: '{{ package_name }}'
+    register: result
+  - debug:
+      var: result
