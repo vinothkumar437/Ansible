@@ -1,0 +1,14 @@
+  - name: Install the package {{ package_name }}
+    yum:
+      name: '{{ package_name }}'
+      state: present
+  - name: Enable and start the {{ package_name }} service
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+  - name: Verify the {{ package_name }} service is active
+    shell: systemctl status {{ package_name }}.service
+    register: result
+  - debug:
+      var: result.stdout_lines[0],result.stdout_lines[2]
