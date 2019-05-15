@@ -1,0 +1,17 @@
+- hosts: test
+  tasks:
+    - include_vars: users.yaml
+
+    - name: Check whether the user is exists or not
+      shell: grep '{{ item.username }}' -q /etc/passwd
+      with_items: '{{users}}'
+      register: result
+      ignore_errors: True
+    - name: create a user
+      user:
+        name: "{{ item.username }}"
+        shell: /bin/bash
+        create_home: yes
+        comment: 'create with ansible'
+      with_items: '{{users}}'
+      when: result != ""
