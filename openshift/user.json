@@ -1,0 +1,32 @@
+{
+"details": {
+        "users": [
+                        {
+                                "username":"test-user01",
+                                "password":"1234567"
+                        },
+                        {
+                                "username":"test-user02",
+                                "password":"123456"
+                        },
+                        {
+                                "username":"test-user03",
+                                "password":"12345"
+                        }
+        ],
+        "images": [
+                "imagename":"httpd-24-rhel7",
+                "imagename":"mysql-57-rhel7",
+                "imagename":"php-56-rhel7",
+                "imagename":"nginx-112-rhel7"
+        ],
+        "project_name":"devops",
+        "group_name":"devops",
+        "max_cpu":"6",
+        "max_memory":"12Gi",
+        "min_cpu":"1",
+        "min_memory":"1Gi",
+        "no_pods":"10",
+        "role_name":"admin"
+        }
+}
