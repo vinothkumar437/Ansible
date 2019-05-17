@@ -1,0 +1,72 @@
+  tasks:
+  - name: check the if user is exist or not
+    shell: sudo oc get user | grep "{{ item.username }}"
+    with_items: "{{details.users}}"
+    register: check
+    ignore_errors: True
+
+  - name: create a user
+    shell: sudo oc create user "{{ item.username }}"
+    with_items: "{{details.users}}"
+    register: result
+    when: check != ""
+    ignore_errors: True
+  - debug:
+      var: result
+
+  - name: create a password for the "{{ item.username }}"
+    shell: sudo htpasswd -b /etc/origin/master/htpasswd "{{ item.username }}" "{{ item.password }}"
+    register: result
+    with_items:
+       - "{{ details.users }}"
+  - debug:
+      var: result
+
+  - name: Adding a label for the "{{ item.username }}" user
+    shell: sudo oc label user/{{ item.username }} level=advanced
+    register: result
+    with_items:
+       - "{{ details.users }}"
+  - debug:
+      var: result.stdout
+
+  - name: create a "{{ details.group_name }}" group
+    shell: sudo oc adm groups new "{{ details.group_name }}"
+    register: result
+  - debug:
+      var: result.stdout
+
+  - name: Adding User to the "{{ details.group_name }}" group
+    shell: sudo oc adm groups add-users "{{ details.group_name }}" "{{ item.username }}"
+    register: result
+    with_items:
+       - "{{ details.users }}"
+
+  - name: create a project
+    shell: sudo oc new-project "{{ details.project_name }}" --description="This Project to demonstrate OpenShift v3" --display-name="{{ details.project_name }} OpenShift"
+    register: result
+  - debug:
+      var: result.stdout
+
+  - name: add role to the "{{ item.username }}" user
+    shell: sudo oc adm policy add-role-to-user "{{ details.role_name }}" "{{ item.username }}" -n "{{ details.project_name }}"
+    register: result
+    with_items:
+       - "{{ details.users }}"
+  - debug:
+      var: result.stdout
+
+  - name: copy the template
+    template: src=create_resource.yaml.j2 dest=/home/cloud-user/create_resource.yaml
+  - name: create a quota
+    shell: sudo oc create -f /home/cloud-user/create_resource.yaml -n "{{ details.project_name }}"
+    register: result
+  - debug:
+      var: result.stdout
+
+  - name: Apache Image Upload for a "{{ details.project_name }}"
+    shell: sudo oc import-image {{ details.project_name }}/{{ item.imagename }} --from=registry.redhat.io/rhscl/{{ item.imagename }} --confirm --insecure -n "{{ details.project_name }}"
+    with_items:
+       - "{{ details.images }}"
+
+
