@@ -1,1 +1,21 @@
+- name: configure and deploy the webservers and application code
+  hosts: web
+  remote_user: ccd
+  gather_facts: no
+  sudo: yes
+  roles:
+    - web
+
+- name: deploy MySQL and configure the databases
+  hosts: db
+  remote_user: ccd
+  gather_facts: no
+  sudo: yes
+  vars:
+    dbname: new01
+    mysql_port: 3306
+    dbuser: testuser
+    upassword: 12345
+  roles:
+    - db
 
