@@ -1,6 +1,6 @@
 - name: configure and deploy the webservers and application code
   hosts: web
-  remote_user: ccd
+  remote_user: ansible
   gather_facts: no
   sudo: yes
   roles:
@@ -8,7 +8,7 @@
 
 - name: deploy MySQL and configure the databases
   hosts: db
-  remote_user: ccd
+  remote_user: ansible
   gather_facts: no
   sudo: yes
   vars:
