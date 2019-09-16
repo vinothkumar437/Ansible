@@ -1,0 +1,9 @@
+TASK [openshift_storage_nfs : Ensure export directories exist] ***********************************************************************
+changed: [nfs.example.com] => (item=/exports/registry)
+changed: [nfs.example.com] => (item=/exports/metrics)
+changed: [nfs.example.com] => (item=/exports/logging-es)
+changed: [nfs.example.com] => (item=/exports/logging-es-ops)
+changed: [nfs.example.com] => (item=/exports/etcd)
+
+TASK [openshift_storage_nfs : Configure exports] *************************************************************************************
+changed: [nfs.example.com]
