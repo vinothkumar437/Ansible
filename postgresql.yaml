@@ -1,0 +1,60 @@
+- name: copy the template
+  template:
+    src: pg_hba.conf.j2
+    dest: /var/lib/pgsql/data/pg_hba.conf
+    backup: yes
+    owner: postgres
+    group: postgres
+    mode: 0600
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['test'] }}"
+
+
+- name: edit the postgresql.conf
+  replace:
+    path: /var/lib/pgsql/data/postgresql.conf
+    backup: yes
+    regexp: "#listen_addresses = 'localhost'"
+    replace: "listen_addresses = '*'"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['test'] }}"
+
+
+- name: restart the service
+  service:
+    name: postgresql
+    state: restarted
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['test'] }}"
+
+- name: Create a new database with name "{{ db_name }}"
+  postgresql_db:
+    name: "{{ db_name }}"
+    login_user: "{{ username }}"
+    login_password: "{{ password }}"
+    login_host: "{{ host }}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['local'] }}"
+
+- name: Create rails user, set MD5-hashed password, grant privs
+  postgresql_user:
+    name: "{{ uname }}"
+    password: "{{ upassword }}"
+    role_attr_flags: CREATEDB,SUPERUSER
+    login_user: "{{ username }}"
+    login_password: "{{ password }}"
+    login_host: "{{ host }}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['local'] }}"
+
+- name: Connect to test database, remove test user from cluster
+  postgresql_user:
+    db: "{{ db_name }}"
+    name: "{{ uname }}"
+    priv: ALL
+    state: present
+    login_user: "{{ username }}"
+    login_password: "{{ password }}"
+    login_host: "{{ host }}"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['local'] }}"
