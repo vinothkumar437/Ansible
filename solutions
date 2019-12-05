@@ -1,1 +1,14 @@
 https://serverfault.com/questions/832799/ansible-add-ip-of-all-hosts-to-etc-hosts-of-all-other-hosts
+
+
+- name: Add IP address of all hosts to all hosts
+  lineinfile:
+    dest: /etc/hosts
+    #regexp: '.*{{ item }}$'
+    line: "{{ item }} {{ hostvars[item].ansible_hostname }}"
+    state: present
+  #when: hostvars[item].ansible_host is defined
+  with_items: "{{ groups.all }}"
+
+
+
